@@ -1,0 +1,62 @@
+[
+  {
+    "id": "remera-basica-negra",
+    "nombre": "Remera Básica Negra",
+    "precio": 8500,
+    "categoria": "remeras",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/remera-negra.jpg",
+    "descripcion": "Remera oversized de algodón 100%. Estampado ONDA BASE en pecho.",
+    "destacado": true
+  },
+  {
+    "id": "remera-oversized-blanca",
+    "nombre": "Remera Oversized Blanca",
+    "precio": 9000,
+    "categoria": "remeras",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/remera-blanca.jpg",
+    "descripcion": "Remera oversized premium. Corte relajado, algodón peinado.",
+    "destacado": true
+  },
+  {
+    "id": "buzo-canguro-negro",
+    "nombre": "Buzo Canguro Negro",
+    "precio": 18000,
+    "categoria": "buzos",
+    "talles": ["M", "L", "XL"],
+    "imagen": "/uploads/buzo-negro.jpg",
+    "descripcion": "Buzo canguro con capucha. Forro interior frisé. Estampado frontal.",
+    "destacado": true
+  },
+  {
+    "id": "camisa-denim",
+    "nombre": "Camisa Denim Oversized",
+    "precio": 22000,
+    "categoria": "camisas",
+    "talles": ["S", "M", "L"],
+    "imagen": "/uploads/camisa-denim.jpg",
+    "descripcion": "Camisa denim lavado, corte oversized. Botones metal.",
+    "destacado": false
+  },
+  {
+    "id": "cargo-negro",
+    "nombre": "Cargo Negro",
+    "precio": 20000,
+    "categoria": "pantalones",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/cargo-negro.jpg",
+    "descripcion": "Pantalón cargo con bolsillos laterales. Tela resistente.",
+    "destacado": true
+  },
+  {
+    "id": "gorra-ondabase",
+    "nombre": "Gorra ONDA BASE",
+    "precio": 6500,
+    "categoria": "accesorios",
+    "talles": ["Único"],
+    "imagen": "/uploads/gorra.jpg",
+    "descripcion": "Gorra snapback. Bordado 3D ONDA BASE en frente.",
+    "destacado": false
+  }
+]

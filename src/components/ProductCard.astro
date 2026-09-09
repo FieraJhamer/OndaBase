@@ -1,0 +1,124 @@
+---
+interface Props {
+  id: string;
+  nombre: string;
+  precio: number;
+  imagen: string;
+  descripcion: string;
+  talles: string[];
+}
+
+const { id, nombre, precio, imagen, descripcion, talles } = Astro.props;
+---
+
+<article class="product-card" data-product-id={id}>
+  <div class="product-card__img-wrap">
+    <img src={imagen} alt={nombre} class="product-card__img" loading="lazy" />
+  </div>
+  <div class="product-card__info">
+    <h3 class="product-card__name">{nombre}</h3>
+    <p class="product-card__desc">{descripcion}</p>
+    <p class="product-card__price">${precio.toLocaleString('es-AR')}</p>
+    <div class="product-card__sizes">
+      {talles.map((talle) => (
+        <button class="product-card__size" data-talle={talle}>{talle}</button>
+      ))}
+    </div>
+    <button class="product-card__add" data-product-id={id}>Agregar al carrito</button>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: border-color var(--transition-base);
+  }
+
+  .product-card:hover {
+    border-color: var(--color-primary);
+  }
+
+  .product-card__img-wrap {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background-color: var(--color-border);
+  }
+
+  .product-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+  }
+
+  .product-card:hover .product-card__img {
+    transform: scale(1.05);
+  }
+
+  .product-card__info {
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .product-card__name {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .product-card__desc {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .product-card__price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .product-card__sizes {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+  }
+
+  .product-card__size {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+  }
+
+  .product-card__size:hover,
+  .product-card__size.active {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .product-card__add {
+    margin-top: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+    transition: background-color var(--transition-fast);
+  }
+
+  .product-card__add:hover {
+    background-color: #b08228;
+  }
+</style>
