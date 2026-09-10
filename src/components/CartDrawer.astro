@@ -18,7 +18,10 @@
         <span>Total</span>
         <span id="cart-total">$0</span>
       </div>
-      <a href="#" class="cart-drawer__checkout" id="cart-checkout">Finalizar Pedido</a>
+      <div class="cart-drawer__actions">
+        <button class="cart-drawer__clear" id="cart-clear">Vaciar carrito</button>
+        <a href="#" class="cart-drawer__checkout" id="cart-checkout">Finalizar Pedido</a>
+      </div>
     </div>
   </div>
 </aside>
@@ -68,7 +71,11 @@
           </div>
           <div class="cart-drawer__item-right">
             <span class="cart-drawer__item-price">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
-            <button class="cart-drawer__item-remove" data-index="${index}" aria-label="Eliminar">&times;</button>
+            <button class="cart-drawer__item-remove" data-index="${index}" aria-label="Eliminar ${item.nombre}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
           </div>
         </div>
       `).join('');
@@ -98,6 +105,12 @@
     saveCart(cart);
   }
 
+  function vaciarCarrito() {
+    if (!confirm('¿Vaciar el carrito por completo?')) return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+    updateCartUI();
+  }
+
   function openCart() {
     document.getElementById('cart-drawer')?.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -115,6 +128,8 @@
     const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
     return encodeURIComponent(`Hola! Quiero hacer este pedido:\n\n${lines.join('\n')}\n\n*Total: $${total.toLocaleString('es-AR')}*`);
   }
+
+  (window as any).ondabaseCart = { addToCart };
 
   // Event listeners
   document.addEventListener('DOMContentLoaded', () => {
@@ -152,11 +167,14 @@
 
     document.getElementById('cart-items')?.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      if (target.classList.contains('cart-drawer__item-remove')) {
-        const index = parseInt(target.dataset.index || '0', 10);
+      const removeBtn = target.closest?.('.cart-drawer__item-remove');
+      if (removeBtn) {
+        const index = parseInt(removeBtn.dataset.index || '0', 10);
         removeFromCart(index);
       }
     });
+
+    document.getElementById('cart-clear')?.addEventListener('click', vaciarCarrito);
 
     document.getElementById('cart-checkout')?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -293,13 +311,21 @@
   }
 
   .cart-drawer__item-remove {
-    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
     color: var(--color-text-muted);
-    transition: color var(--transition-fast);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
   }
 
   .cart-drawer__item-remove:hover {
     color: #e74c3c;
+    border-color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.1);
   }
 
   .cart-drawer__footer {
@@ -313,6 +339,30 @@
     font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: var(--space-md);
+  }
+
+  .cart-drawer__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .cart-drawer__clear {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-fast);
+  }
+
+  .cart-drawer__clear:hover {
+    color: #e74c3c;
+    border-color: #e74c3c;
   }
 
   .cart-drawer__checkout {

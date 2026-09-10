@@ -1,4 +1,19 @@
 ---
+interface Producto {
+  id: string;
+  nombre: string;
+  precio: number;
+  categoria: string;
+  imagen: string;
+  descripcion: string;
+  talles: string[];
+}
+
+interface Props {
+  productos: Producto[];
+}
+
+const { productos } = Astro.props;
 ---
 
 <header class="header">
@@ -7,8 +22,24 @@
       <img src="/logo.png" alt="ONDA BASE" class="header__logo-img" />
     </a>
 
+    <div class="header__search" id="header-search">
+      <svg xmlns="http://www.w3.org/2000/svg" class="header__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input
+        type="search"
+        class="header__search-input"
+        id="header-buscar"
+        placeholder="Buscar prendas..."
+        aria-label="Buscar prendas"
+        autocomplete="off"
+      />
+      <ul class="header__search-results" id="header-search-results"></ul>
+    </div>
+
     <nav class="header__nav" aria-label="Navegación principal">
       <a href="#coleccion" class="header__link">Colección</a>
+      <a href="#drops" class="header__link">Drops</a>
       <a href="#nosotros" class="header__link">Nosotros</a>
       <a href="#contacto" class="header__link">Contacto</a>
     </nav>
@@ -23,7 +54,98 @@
   </div>
 </header>
 
-<style>
+<script define:vars={{ productos }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrap = document.getElementById('header-search');
+    const input = document.getElementById('header-buscar');
+    const resultsEl = document.getElementById('header-search-results');
+    if (!wrap || !input || !resultsEl) return;
+
+    function normalizar(texto) {
+      return texto
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function renderResultados(consulta) {
+      const q = normalizar(consulta).trim();
+      if (!q) {
+        resultsEl.innerHTML = '';
+        wrap.classList.remove('open');
+        return;
+      }
+
+      const matches = productos
+        .filter((p) =>
+          normalizar(p.nombre).includes(q) ||
+          normalizar(p.descripcion).includes(q) ||
+          normalizar(p.categoria).includes(q)
+        )
+        .slice(0, 6);
+
+      if (matches.length === 0) {
+        resultsEl.innerHTML =
+          '<li class="header__search-empty">Sin resultados</li>';
+      } else {
+        resultsEl.innerHTML = matches
+          .map(
+            (p) => `
+          <li>
+            <button class="header__search-item" data-id="${p.id}" type="button">
+              <img src="${p.imagen}" alt="" class="header__search-img" loading="lazy" />
+              <span class="header__search-info">
+                <span class="header__search-name">${p.nombre}</span>
+                <span class="header__search-cat">${p.categoria}</span>
+              </span>
+              <span class="header__search-price">$${p.precio.toLocaleString('es-AR')}</span>
+            </button>
+          </li>
+        `
+          )
+          .join('');
+      }
+
+      wrap.classList.add('open');
+    }
+
+    input.addEventListener('input', () => renderResultados(input.value));
+    input.addEventListener('focus', () => {
+      if (input.value.trim()) renderResultados(input.value);
+    });
+
+    resultsEl.addEventListener('click', (e) => {
+      const target = /** @type {any} */ (e.target);
+      const item = target.closest && target.closest('.header__search-item');
+      if (!item) return;
+
+      const id = item.dataset.id || '';
+      input.value = '';
+      renderResultados('');
+      input.blur();
+
+      const api = window['ondabaseModales'];
+      api?.abrirProducto(id);
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = /** @type {any} */ (e.target);
+      if (target.closest && !target.closest('#header-search')) {
+        wrap.classList.remove('open');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        input.value = '';
+        renderResultados('');
+        input.blur();
+      }
+    });
+  });
+</script>
+
+<style is:global>
   .header {
     position: sticky;
     top: 0;
@@ -50,6 +172,125 @@
   .header__nav {
     display: flex;
     gap: var(--space-xl);
+  }
+
+  .header__search {
+    position: relative;
+    flex: 1;
+    max-width: 360px;
+    margin-inline: var(--space-xl);
+  }
+
+  .header__search-input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-lg) var(--space-sm) calc(var(--space-lg) + 20px);
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    transition: border-color var(--transition-fast);
+  }
+
+  .header__search-icon {
+    position: absolute;
+    top: 50%;
+    left: var(--space-md);
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .header__search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .header__search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .header__search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 120;
+    max-height: 360px;
+    overflow-y: auto;
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    display: none;
+  }
+
+  .header__search.open .header__search-results {
+    display: block;
+  }
+
+  .header__search-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    width: 100%;
+    padding: var(--space-sm) var(--space-lg);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color var(--transition-fast);
+  }
+
+  .header__search-item:hover {
+    background-color: var(--color-bg);
+  }
+
+  .header__search-item:last-child {
+    border-bottom: none;
+  }
+
+  .header__search-img {
+    width: 44px;
+    height: 56px;
+    object-fit: cover;
+    background-color: var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .header__search-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header__search-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .header__search-cat {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .header__search-price {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .header__search-empty {
+    padding: var(--space-lg);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
   }
 
   .header__link {
@@ -96,9 +337,19 @@
     border-radius: 50%;
   }
 
+  @media (max-width: 960px) {
+    .header__search {
+      max-width: none;
+    }
+  }
+
   @media (max-width: 640px) {
     .header__nav {
       display: none;
+    }
+
+    .header__search {
+      margin-inline: var(--space-md);
     }
 
     .header__logo-img {

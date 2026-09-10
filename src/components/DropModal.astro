@@ -1,0 +1,232 @@
+---
+import ProductCard from './ProductCard.astro';
+
+interface DropProducto {
+  id: string;
+  nombre: string;
+  precio: number;
+  imagen: string;
+  descripcion: string;
+  talles: string[];
+  categoria: string;
+}
+
+interface Drop {
+  id: string;
+  nombre: string;
+  tagline: string;
+  fecha: string;
+  productos: DropProducto[];
+}
+
+interface Props {
+  drops: Drop[];
+}
+
+const { drops } = Astro.props;
+---
+
+<aside class="drop-modal" id="drop-modal">
+  <div class="drop-modal__overlay" id="drop-modal-overlay"></div>
+  <div class="drop-modal__dialog" role="dialog" aria-modal="true">
+    <div class="drop-modal__header">
+      <div class="drop-modal__heading">
+        <span class="drop-modal__kicker">Drop</span>
+        <h3 class="drop-modal__nombre" id="drop-modal-nombre"></h3>
+        <span class="drop-modal__fecha" id="drop-modal-fecha"></span>
+      </div>
+      <button class="drop-modal__close" id="drop-modal-close" aria-label="Cerrar">&times;</button>
+    </div>
+    <p class="drop-modal__tagline" id="drop-modal-tagline"></p>
+    <div class="drop-modal__body">
+      {drops.map((drop) => (
+        <div class="drop-modal__panel" data-drop-panel={drop.id}>
+          <div class="drop-modal__grid">
+            {drop.productos.map((producto) => (
+              <ProductCard
+                id={producto.id}
+                nombre={producto.nombre}
+                precio={producto.precio}
+                imagen={producto.imagen}
+                descripcion={producto.descripcion}
+                talles={producto.talles}
+                categoria={producto.categoria}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('drop-modal');
+    const overlay = document.getElementById('drop-modal-overlay');
+    const closeBtn = document.getElementById('drop-modal-close');
+    const nombreEl = document.getElementById('drop-modal-nombre');
+    const taglineEl = document.getElementById('drop-modal-tagline');
+    const fechaEl = document.getElementById('drop-modal-fecha');
+
+    function cerrarModal() {
+      modal?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function abrirDrop(id, nombre, tagline, fecha) {
+      document.querySelectorAll('.drop-modal__panel').forEach(panel => panel.classList.remove('active'));
+      const panel = modal?.querySelector(`[data-drop-panel="${id}"]`);
+      panel?.classList.add('active');
+
+      if (nombreEl) nombreEl.textContent = nombre;
+      if (taglineEl) taglineEl.textContent = tagline;
+      if (fechaEl) {
+        const d = new Date(fecha + 'T00:00:00');
+        fechaEl.textContent = d.toLocaleDateString('es-AR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      }
+
+      modal?.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modal?.querySelector('.drop-modal__dialog')?.scrollTo(0, 0);
+    }
+
+    document.querySelectorAll('.drop-card__view').forEach(btn => {
+      btn.addEventListener('click', () => {
+        abrirDrop(
+          btn.dataset.dropId,
+          btn.dataset.dropNombre,
+          btn.dataset.dropTagline,
+          btn.dataset.dropFecha
+        );
+      });
+    });
+
+    closeBtn?.addEventListener('click', cerrarModal);
+    overlay?.addEventListener('click', cerrarModal);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') cerrarModal();
+    });
+  });
+</script>
+
+<style>
+  .drop-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .drop-modal.open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .drop-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+
+  .drop-modal__dialog {
+    position: relative;
+    margin: var(--space-3xl) auto;
+    width: min(960px, calc(100% - 32px));
+    max-height: calc(100vh - var(--space-3xl) * 2);
+    overflow-y: auto;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    transform: translateY(16px);
+    transition: transform var(--transition-base);
+  }
+
+  .drop-modal.open .drop-modal__dialog {
+    transform: translateY(0);
+  }
+
+  .drop-modal__header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .drop-modal__heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .drop-modal__kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-primary);
+  }
+
+  .drop-modal__nombre {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .drop-modal__fecha {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .drop-modal__close {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+  }
+
+  .drop-modal__close:hover {
+    color: var(--color-text);
+  }
+
+  .drop-modal__tagline {
+    padding: var(--space-lg);
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .drop-modal__body {
+    padding: 0 var(--space-lg) var(--space-lg);
+  }
+
+  .drop-modal__panel {
+    display: none;
+  }
+
+  .drop-modal__panel.active {
+    display: block;
+  }
+
+  .drop-modal__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-md);
+  }
+</style>

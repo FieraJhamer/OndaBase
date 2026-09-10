@@ -4,10 +4,38 @@ import Hero from '../components/Hero.astro';
 import ProductCard from '../components/ProductCard.astro';
 import CartDrawer from '../components/CartDrawer.astro';
 import Footer from '../components/Footer.astro';
+import DropCard from '../components/DropCard.astro';
+import DropModal from '../components/DropModal.astro';
+import ProductModal from '../components/ProductModal.astro';
 import productos from '../data/productos.json';
+import drops from '../data/drops.json';
+import config from '../data/config.json';
 import '../styles/global.css';
 
-const destacados = productos.filter(p => p.destacado);
+const categorias = [...new Set(productos.map(p => p.categoria))];
+
+const dropDestacado = drops.find((d) => d.destacado) ?? drops[0];
+const dropsAnteriores = drops.filter((d) => !d.destacado);
+
+function resolverDrop(drop) {
+  return {
+    ...drop,
+    portada: drop.portada || productos.find((p) => p.id === drop.productos[0])?.imagen || '',
+    cantidad: drop.productos.length,
+    productos: drop.productos
+      .map((id) => productos.find((p) => p.id === id))
+      .filter(Boolean),
+  };
+}
+
+const destacado = resolverDrop(dropDestacado);
+const anteriores = dropsAnteriores.map(resolverDrop);
+
+const fechaDestacado = new Date(destacado.fecha + 'T00:00:00').toLocaleDateString('es-AR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
 ---
 
 <html lang="es">
@@ -15,24 +43,29 @@ const destacados = productos.filter(p => p.destacado);
     <meta charset="utf-8" />
     <link rel="icon" href="/ondabase.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ONDA BASE — Streetwear con identidad. Catálogo de ropa urbana." />
+    <meta name="description" content="Onda Base - Catálogo de ropa urbana." />
     <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
-    <title>ONDA BASE — Streetwear</title>
+    <title>Onda Base - Ropa urbana</title>
   </head>
   <body>
-    <Header />
+    <Header productos={productos} />
     <CartDrawer />
 
     <main>
-      <Hero />
+      <Hero imagen={config.hero.imagen} />
 
       <section class="section container" id="coleccion">
-        <h2 class="section__title">Colección Destacada</h2>
+        <div class="drop-hero">
+          <span class="drop-hero__kicker">Drop actual</span>
+          <h2 class="section__title">{destacado.nombre}</h2>
+          <p class="drop-hero__tagline">{destacado.tagline}</p>
+          <span class="drop-hero__fecha">{fechaDestacado}</span>
+        </div>
         <div class="products-grid">
-          {destacados.map((producto) => (
+          {destacado.productos.map((producto) => (
             <ProductCard
               id={producto.id}
               nombre={producto.nombre}
@@ -40,6 +73,23 @@ const destacados = productos.filter(p => p.destacado);
               imagen={producto.imagen}
               descripcion={producto.descripcion}
               talles={producto.talles}
+              categoria={producto.categoria}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section class="section container" id="drops">
+        <h2 class="section__title">Drops Anteriores</h2>
+        <div class="drops-grid">
+          {anteriores.map((drop) => (
+            <DropCard
+              id={drop.id}
+              nombre={drop.nombre}
+              tagline={drop.tagline}
+              fecha={drop.fecha}
+              portada={drop.portada}
+              cantidad={drop.cantidad}
             />
           ))}
         </div>
@@ -47,7 +97,15 @@ const destacados = productos.filter(p => p.destacado);
 
       <section class="section container" id="todos">
         <h2 class="section__title">Todos los Productos</h2>
-        <div class="products-grid">
+        <div class="filters" role="group" aria-label="Filtros por categoría">
+          <button class="filter-btn active" data-categoria="todos">Todos</button>
+          {categorias.map((categoria) => (
+            <button class="filter-btn" data-categoria={categoria}>
+              {categoria}
+            </button>
+          ))}
+        </div>
+        <div class="products-grid" id="productos-grid">
           {productos.map((producto) => (
             <ProductCard
               id={producto.id}
@@ -56,8 +114,12 @@ const destacados = productos.filter(p => p.destacado);
               imagen={producto.imagen}
               descripcion={producto.descripcion}
               talles={producto.talles}
+              categoria={producto.categoria}
             />
           ))}
+        </div>
+        <div class="show-more">
+          <button class="show-more__btn" id="ver-mas-btn" type="button">Mostrar más</button>
         </div>
       </section>
 
@@ -65,7 +127,7 @@ const destacados = productos.filter(p => p.destacado);
         <div class="about">
           <h2 class="section__title">Sobre ONDA BASE</h2>
           <p class="about__text">
-            Somos una marca de streetwear nacida con la idea de expresar identidad a través de la ropa.
+            Somos una tienda nacida con en Londres, provincia de Catamarca, Argentina.
             Cada pieza está pensada para quienes caminan con actitud y no siguen tendencias — las crean.
           </p>
         </div>
@@ -84,6 +146,88 @@ const destacados = productos.filter(p => p.destacado);
     </main>
 
     <Footer />
+
+    <DropModal drops={anteriores} />
+    <ProductModal productos={productos} />
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const grid = document.getElementById('productos-grid');
+        const btnMas = document.getElementById('ver-mas-btn');
+        const cards = grid ? Array.from(grid.querySelectorAll('.product-card')) : [];
+        const FILAS_INICIALES = 3;
+        let mostrarTodo = false;
+        let limite = 0;
+
+        cards.forEach((card, i) => {
+          card.dataset.indice = String(i);
+        });
+
+        function medirColumnas() {
+          if (!grid) return 1;
+          cards.forEach((c) => (c.style.display = ''));
+          const cols = getComputedStyle(grid).gridTemplateColumns
+            .split(' ')
+            .filter(Boolean).length;
+          return Math.max(cols, 1);
+        }
+
+        function aplicar() {
+          if (!grid) return;
+
+          const activo = document.querySelector('.filter-btn.active');
+          const categoria = activo ? activo.dataset.categoria : 'todos';
+          let visibles = 0;
+
+          cards.forEach((card) => {
+            const coincide = categoria === 'todos' || card.dataset.categoria === categoria;
+            card.dataset.filtroActivo = coincide ? '1' : '0';
+            const mostrar = coincide && (mostrarTodo || visibles < limite);
+            card.style.display = mostrar ? '' : 'none';
+            if (mostrar) visibles++;
+          });
+
+          const totalCoinciden = cards.filter((c) => c.dataset.filtroActivo === '1').length;
+          if (btnMas) {
+            btnMas.style.display = totalCoinciden > limite ? 'inline-block' : 'none';
+            btnMas.textContent = mostrarTodo ? 'Mostrar menos' : 'Mostrar más';
+          }
+        }
+
+        function recalcularyAplicar() {
+          limite = medirColumnas() * FILAS_INICIALES;
+          aplicar();
+        }
+
+        recalcularyAplicar();
+
+        filterBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            filterBtns.forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            mostrarTodo = false;
+            aplicar();
+          });
+        });
+
+        btnMas?.addEventListener('click', () => {
+          mostrarTodo = !mostrarTodo;
+          aplicar();
+          if (!mostrarTodo) {
+            btnMas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            if (!mostrarTodo) recalcularyAplicar();
+          }, 150);
+        });
+      });
+    </script>
   </body>
 </html>
 
@@ -106,6 +250,96 @@ const destacados = productos.filter(p => p.destacado);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--space-lg);
+  }
+
+  .drop-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .drop-hero__kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-primary);
+  }
+
+  .drop-hero__tagline {
+    max-width: 560px;
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .drop-hero__fecha {
+    font-size: 0.8125rem;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .drops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-xl);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .show-more {
+    margin-top: var(--space-2xl);
+    text-align: center;
+  }
+
+  .show-more__btn {
+    padding: var(--space-sm) var(--space-2xl);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+    border: 1px solid var(--color-primary);
+    background-color: transparent;
+    transition: all var(--transition-fast);
+  }
+
+  .show-more__btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+  }
+
+  .filter-btn {
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    transition: all var(--transition-fast);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .filter-btn.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg);
   }
 
   .about,

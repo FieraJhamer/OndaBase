@@ -4,10 +4,9 @@
     "nombre": "Remera Básica Negra",
     "precio": 8500,
     "categoria": "remeras",
-    "talles": ["S", "M", "L", "XL"],
+    "talles": ["S", "M", "L", "L"],
     "imagen": "/uploads/remera-negra.jpg",
-    "descripcion": "Remera oversized de algodón 100%. Estampado ONDA BASE en pecho.",
-    "destacado": true
+    "descripcion": "Remera oversized de algodón 100%. Estampado ONDA BASE en pecho."
   },
   {
     "id": "remera-oversized-blanca",
@@ -16,8 +15,25 @@
     "categoria": "remeras",
     "talles": ["S", "M", "L", "XL"],
     "imagen": "/uploads/remera-blanca.jpg",
-    "descripcion": "Remera oversized premium. Corte relajado, algodón peinado.",
-    "destacado": true
+    "descripcion": "Remera oversized premium. Corte relajado, algodón peinado."
+  },
+  {
+    "id": "remera-basica-blanca",
+    "nombre": "Remera Básica Blanca",
+    "precio": 8500,
+    "categoria": "remeras",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/remera-basica-blanca.jpg",
+    "descripcion": "Remera básica blanca de algodón. El fondo del uniforme urbano."
+  },
+  {
+    "id": "remera-grafica-oliva",
+    "nombre": "Remera Gráfica Oliva",
+    "precio": 9800,
+    "categoria": "remeras",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/remera-grafica-oliva.jpg",
+    "descripcion": "Remera oversized tono oliva con gráfica trasera ONDA BASE."
   },
   {
     "id": "buzo-canguro-negro",
@@ -26,8 +42,34 @@
     "categoria": "buzos",
     "talles": ["M", "L", "XL"],
     "imagen": "/uploads/buzo-negro.jpg",
-    "descripcion": "Buzo canguro con capucha. Forro interior frisé. Estampado frontal.",
-    "destacado": true
+    "descripcion": "Buzo canguro con capucha. Forro interior frisé. Estampado frontal."
+  },
+  {
+    "id": "buzo-doble-faz-bordeaux",
+    "nombre": "Buzo Doble Faz Bórdó",
+    "precio": 21500,
+    "categoria": "buzos",
+    "talles": ["M", "L", "XL"],
+    "imagen": "/uploads/buzo-doble-faz-bordeaux.jpg",
+    "descripcion": "Buzo reversible doble faz tono bórdó. Amplio, pesado y cómodo."
+  },
+  {
+    "id": "buzo-oversized-gris",
+    "nombre": "Buzo Oversized Gris",
+    "precio": 19000,
+    "categoria": "buzos",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/buzo-oversized-gris.jpg",
+    "descripcion": "Buzo oversized gris jaspeado. Cuello redondo y mangas raglán."
+  },
+  {
+    "id": "camisa-chambray",
+    "nombre": "Camisa Chambray Azul",
+    "precio": 19500,
+    "categoria": "camisas",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/camisa-chambray.jpg",
+    "descripcion": "Camisa chambray lavado, corte holgado. Ideal para capas."
   },
   {
     "id": "camisa-denim",
@@ -36,8 +78,16 @@
     "categoria": "camisas",
     "talles": ["S", "M", "L"],
     "imagen": "/uploads/camisa-denim.jpg",
-    "descripcion": "Camisa denim lavado, corte oversized. Botones metal.",
-    "destacado": false
+    "descripcion": "Camisa denim lavado, corte oversized. Botones metal."
+  },
+  {
+    "id": "campera-bomber-negra",
+    "nombre": "Campera Bomber Negra",
+    "precio": 32000,
+    "categoria": "camperas",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/campera-bomber-negra.jpg",
+    "descripcion": "Bomber de relleno tono negro. Manga matelassé, logo bordado en el pecho."
   },
   {
     "id": "cargo-negro",
@@ -46,8 +96,34 @@
     "categoria": "pantalones",
     "talles": ["S", "M", "L", "XL"],
     "imagen": "/uploads/cargo-negro.jpg",
-    "descripcion": "Pantalón cargo con bolsillos laterales. Tela resistente.",
-    "destacado": true
+    "descripcion": "Pantalón cargo con bolsillos laterales. Tela resistente."
+  },
+  {
+    "id": "jogger-negro",
+    "nombre": "Jogger Negro",
+    "precio": 18500,
+    "categoria": "pantalones",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/jogger-negro.jpg",
+    "descripcion": "Jogger de felpa con elástico en tobillo y tiro medio."
+  },
+  {
+    "id": "jean-holgado",
+    "nombre": "Jean Holgado Comfy",
+    "precio": 24000,
+    "categoria": "pantalones",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/jean-holgado.jpg",
+    "descripcion": "Jean holgado de lavado medio. Corte recto y caída perfecta."
+  },
+  {
+    "id": "short-cargo",
+    "nombre": "Short Cargo",
+    "precio": 15000,
+    "categoria": "shorts",
+    "talles": ["S", "M", "L", "XL"],
+    "imagen": "/uploads/short-cargo.jpg",
+    "descripcion": "Short cargo de gabardina con bolsillos cargo. Largo por la rodilla."
   },
   {
     "id": "gorra-ondabase",
@@ -56,7 +132,24 @@
     "categoria": "accesorios",
     "talles": ["Único"],
     "imagen": "/uploads/gorra.jpg",
-    "descripcion": "Gorra snapback. Bordado 3D ONDA BASE en frente.",
-    "destacado": false
+    "descripcion": "Gorra snapback. Bordado 3D ONDA BASE en frente."
+  },
+  {
+    "id": "bucket-hat",
+    "nombre": "Bucket Hat Negro",
+    "precio": 7800,
+    "categoria": "accesorios",
+    "talles": ["Único"],
+    "imagen": "/uploads/bucket-hat.jpg",
+    "descripcion": "Bucket hat de tela liviana con logo bordado. Talle único."
+  },
+  {
+    "id": "tote-bag-ondabase",
+    "nombre": "Tote Bag ONDA BASE",
+    "precio": 5500,
+    "categoria": "accesorios",
+    "talles": ["Único"],
+    "imagen": "/uploads/tote-bag.jpg",
+    "descripcion": "Tote bag de arpillera estampado frontal. Capacidad para todo el día."
   }
 ]

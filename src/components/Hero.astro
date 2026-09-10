@@ -1,12 +1,20 @@
 ---
+interface Props {
+  imagen?: string;
+}
+
+const { imagen } = Astro.props;
 ---
 
 <section class="hero" id="inicio">
-  <div class="hero__bg"></div>
+  <div
+    class:list={['hero__bg', { 'hero__bg--imagen': imagen }]}
+    style={imagen ? `background-image: url('${imagen}')` : undefined}
+  ></div>
+  {imagen && <div class="hero__scrim"></div>}
   <div class="hero__content container">
     <p class="hero__tag">Nueva Colección 2026</p>
     <h1 class="hero__title">ONDA BASE</h1>
-    <p class="hero__subtitle">Streetwear con identidad</p>
     <a href="#coleccion" class="hero__cta">Ver Colección</a>
   </div>
 </section>
@@ -27,6 +35,18 @@
     inset: 0;
     background: radial-gradient(ellipse at center, var(--color-secondary) 0%, var(--color-bg) 70%);
     opacity: 0.4;
+  }
+
+  .hero__bg--imagen {
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(10, 13, 13, 0.6);
   }
 
   .hero__content {
@@ -55,13 +75,6 @@
     letter-spacing: 0.1em;
     color: var(--color-text);
     line-height: 1;
-  }
-
-  .hero__subtitle {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
   }
 
   .hero__cta {

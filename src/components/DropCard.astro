@@ -1,0 +1,133 @@
+---
+interface Props {
+  id: string;
+  nombre: string;
+  tagline: string;
+  fecha: string;
+  portada: string;
+  cantidad: number;
+}
+
+const { id, nombre, tagline, fecha, portada, cantidad } = Astro.props;
+
+const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-AR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="drop-card">
+  <div class="drop-card__img-wrap">
+    <img src={portada} alt={nombre} class="drop-card__img" loading="lazy" />
+    <span class="drop-card__badge">{cantidad} {cantidad === 1 ? 'pieza' : 'piezas'}</span>
+  </div>
+  <div class="drop-card__body">
+    <span class="drop-card__fecha">{fechaFormateada}</span>
+    <h3 class="drop-card__nombre">{nombre}</h3>
+    <p class="drop-card__tagline">{tagline}</p>
+    <button
+      class="drop-card__view"
+      data-drop-id={id}
+      data-drop-nombre={nombre}
+      data-drop-tagline={tagline}
+      data-drop-fecha={fecha}
+    >
+      Ver productos
+    </button>
+  </div>
+</article>
+
+<style>
+  .drop-card {
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition-base), transform var(--transition-base);
+  }
+
+  .drop-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+  }
+
+  .drop-card__img-wrap {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background-color: var(--color-border);
+  }
+
+  .drop-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+  }
+
+  .drop-card:hover .drop-card__img {
+    transform: scale(1.05);
+  }
+
+  .drop-card__badge {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+  }
+
+  .drop-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    flex: 1;
+  }
+
+  .drop-card__fecha {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+  }
+
+  .drop-card__nombre {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .drop-card__tagline {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .drop-card__view {
+    margin-top: auto;
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+    border: 1px solid var(--color-primary);
+    transition: all var(--transition-fast);
+  }
+
+  .drop-card__view:hover {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+  }
+</style>

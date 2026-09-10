@@ -6,15 +6,17 @@ interface Props {
   imagen: string;
   descripcion: string;
   talles: string[];
+  categoria: string;
 }
 
-const { id, nombre, precio, imagen, descripcion, talles } = Astro.props;
+const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.props;
 ---
 
-<article class="product-card" data-product-id={id}>
-  <div class="product-card__img-wrap">
-    <img src={imagen} alt={nombre} class="product-card__img" loading="lazy" />
-  </div>
+<article class="product-card" data-product-id={id} data-categoria={categoria}>
+<div class="product-card__img-wrap">
+      <img src={imagen} alt={nombre} class="product-card__img" loading="lazy" />
+      <button class="product-card__view" type="button">Ver detalles</button>
+    </div>
   <div class="product-card__info">
     <h3 class="product-card__name">{nombre}</h3>
     <p class="product-card__desc">{descripcion}</p>
@@ -41,9 +43,11 @@ const { id, nombre, precio, imagen, descripcion, talles } = Astro.props;
   }
 
   .product-card__img-wrap {
+    position: relative;
     aspect-ratio: 3 / 4;
     overflow: hidden;
     background-color: var(--color-border);
+    cursor: pointer;
   }
 
   .product-card__img {
@@ -55,6 +59,31 @@ const { id, nombre, precio, imagen, descripcion, talles } = Astro.props;
 
   .product-card:hover .product-card__img {
     transform: scale(1.05);
+  }
+
+  .product-card__view {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: var(--space-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all var(--transition-base);
+  }
+
+  .product-card:hover .product-card__view,
+  .product-card__view:focus {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .product-card__name {
+    cursor: pointer;
   }
 
   .product-card__info {

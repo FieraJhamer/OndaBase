@@ -1,0 +1,65 @@
+[
+  {
+    "id": "drop-olas-negras",
+    "nombre": "Olas Negras",
+    "tagline": "Primera entrega. Esenciales en negro y blanco para arrancar con todo.",
+    "fecha": "2026-01-15",
+    "destacado": true,
+    "portada": "/uploads/remera-negra.jpg",
+    "productos": ["remera-basica-negra", "remera-oversized-blanca", "buzo-canguro-negro"]
+  },
+  {
+    "id": "drop-tonos-tierra",
+    "nombre": "Tonos Tierra",
+    "tagline": "Oliva y bórdó. Paleta cálida para la nueva temporada.",
+    "fecha": "2026-02-02",
+    "destacado": false,
+    "portada": "/uploads/remera-grafica-oliva.jpg",
+    "productos": ["remera-grafica-oliva", "buzo-doble-faz-bordeaux"]
+  },
+  {
+    "id": "drop-urban-denim",
+    "nombre": "Urban Denim",
+    "tagline": "Denim oversized para dominar la calle.",
+    "fecha": "2026-03-20",
+    "destacado": false,
+    "portada": "/uploads/camisa-denim.jpg",
+    "productos": ["camisa-denim", "camisa-chambray"]
+  },
+  {
+    "id": "drop-zona-gris",
+    "nombre": "Zona Gris",
+    "tagline": "Layering con actitud. Buzos, joggers y el bucket hat de la casa.",
+    "fecha": "2026-04-05",
+    "destacado": false,
+    "portada": "/uploads/buzo-oversized-gris.jpg",
+    "productos": ["buzo-oversized-gris", "jogger-negro", "bucket-hat"]
+  },
+  {
+    "id": "drop-borde-urbano",
+    "nombre": "Borde Urbano",
+    "tagline": "Bombers, shorts y básicos para el que camina rápido.",
+    "fecha": "2026-05-10",
+    "destacado": false,
+    "portada": "/uploads/campera-bomber-negra.jpg",
+    "productos": ["campera-bomber-negra", "short-cargo", "remera-basica-blanca"]
+  },
+  {
+    "id": "drop-cargo-caps",
+    "nombre": "Cargo & Caps",
+    "tagline": "Funcionalidad con actitud. Bolsillos donde los necesitás y el logo bien visible.",
+    "fecha": "2026-07-22",
+    "destacado": false,
+    "portada": "/uploads/cargo-negro.jpg",
+    "productos": ["cargo-negro", "gorra-ondabase", "tote-bag-ondabase"]
+  },
+  {
+    "id": "drop-esenciales",
+    "nombre": "Esenciales",
+    "tagline": "Los que nunca pueden faltar. Denim holgado y básicos de siempre.",
+    "fecha": "2026-08-15",
+    "destacado": false,
+    "portada": "/uploads/jean-holgado.jpg",
+    "productos": ["jean-holgado"]
+  }
+]

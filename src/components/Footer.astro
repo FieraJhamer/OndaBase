@@ -4,12 +4,14 @@
 <footer class="footer">
   <div class="footer__inner container">
     <div class="footer__brand">
-      <span class="footer__logo">ONDA BASE</span>
-      <p class="footer__tagline">Streetwear con identidad</p>
+      <span class="footer__logo">
+        <img src="/logo.png" alt="ONDA BASE" class="footer__logo-img" />
+      </span>
     </div>
 
     <nav class="footer__nav" aria-label="Enlaces">
       <a href="#coleccion" class="footer__link">Colección</a>
+      <a href="#drops" class="footer__link">Drops</a>
       <a href="#nosotros" class="footer__link">Nosotros</a>
       <a href="#contacto" class="footer__link">Contacto</a>
     </nav>
@@ -22,7 +24,11 @@
       </a>
     </div>
 
-    <p class="footer__copy">&copy; 2026 ONDA BASE. Todos los derechos reservados.</p>
+    <p class="footer__copy">
+    &copy; 2026 Onda Base, Todos los derechos reservados.
+    <br>
+    Desarrollado por FieraJhamer
+    </p>
   </div>
 </footer>
 
@@ -42,12 +48,11 @@
     text-align: center;
   }
 
-  .footer__logo {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--color-primary);
+  .footer__logo-img {
+    height: 96px;
+    width: auto;
+    display: block;
+    margin-inline: auto;
   }
 
   .footer__tagline {

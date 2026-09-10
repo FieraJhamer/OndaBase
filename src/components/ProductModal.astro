@@ -1,0 +1,280 @@
+---
+interface Producto {
+  id: string;
+  nombre: string;
+  precio: number;
+  categoria: string;
+  talles: string[];
+  imagen: string;
+  descripcion: string;
+}
+
+interface Props {
+  productos: Producto[];
+}
+
+const { productos } = Astro.props;
+---
+
+<aside class="product-modal" id="product-modal">
+  <div class="product-modal__overlay" id="product-modal-overlay"></div>
+  <div class="product-modal__dialog" role="dialog" aria-modal="true">
+    <button class="product-modal__close" id="product-modal-close" aria-label="Cerrar">&times;</button>
+    <div class="product-modal__content" id="product-modal-content"></div>
+  </div>
+</aside>
+
+<script define:vars={{ productos }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('product-modal');
+    const contentEl = document.getElementById('product-modal-content');
+    const overlay = document.getElementById('product-modal-overlay');
+    const closeBtn = document.getElementById('product-modal-close');
+    const drawer = document.getElementById('cart-drawer');
+
+    function cerrarModal() {
+      modal?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function abrirModal(id) {
+      const producto = productos.find((p) => p.id === id);
+      if (!producto) return;
+
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <div class="product-modal__imagen">
+            <img src="${producto.imagen}" alt="${producto.nombre}" class="product-modal__img" />
+          </div>
+          <div class="product-modal__info">
+            <span class="product-modal__categoria">${producto.categoria}</span>
+            <h3 class="product-modal__nombre">${producto.nombre}</h3>
+            <p class="product-modal__desc">${producto.descripcion}</p>
+            <p class="product-modal__precio">$${producto.precio.toLocaleString('es-AR')}</p>
+            <div class="product-modal__sizes">
+              ${producto.talles.map((talle) => `
+                <button class="product-modal__size" data-talle="${talle}">${talle}</button>
+              `).join('')}
+            </div>
+            <button class="product-modal__add" data-id="${producto.id}" data-nombre="${producto.nombre}" data-precio="${producto.precio}">
+              Agregar al carrito
+            </button>
+          </div>
+        `;
+      }
+
+      modal?.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    window['ondabaseModales'] = { abrirProducto: abrirModal };
+
+    document.addEventListener('click', (e) => {
+      const target = /** @type {any} */ (e.target);
+      const card = target.closest && target.closest('.product-card');
+      if (!card) return;
+
+      const enControles =
+        target.closest('.product-card__sizes') || target.closest('.product-card__add');
+      if (enControles) return;
+
+      const productId = card.dataset.productId;
+      if (productId) abrirModal(productId);
+    });
+
+    contentEl?.addEventListener('click', (e) => {
+      const target = /** @type {any} */ (e.target);
+      const sizeBtn = target.closest && target.closest('.product-modal__size');
+      if (sizeBtn) {
+        contentEl.querySelectorAll('.product-modal__size').forEach((b) => b.classList.remove('active'));
+        sizeBtn.classList.add('active');
+        return;
+      }
+
+      const addBtn = target.closest && target.closest('.product-modal__add');
+      if (addBtn) {
+        const sizeEl = contentEl.querySelector('.product-modal__size.active');
+        if (!sizeEl) {
+          alert('Seleccioná un talle');
+          return;
+        }
+        const talle = sizeEl.dataset.talle || '';
+        const id = addBtn.dataset.id || '';
+        const nombre = addBtn.dataset.nombre || '';
+        const precio = parseInt(addBtn.dataset.precio || '0', 10);
+
+        const cartApi = window['ondabaseCart'];
+        cartApi?.addToCart(id, nombre, precio, talle);
+
+        if (drawer?.classList.contains('open')) cerrarModal();
+      }
+    });
+
+    closeBtn?.addEventListener('click', cerrarModal);
+    overlay?.addEventListener('click', cerrarModal);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal?.classList.contains('open')) cerrarModal();
+    });
+  });
+</script>
+
+<style is:global>
+  .product-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .product-modal.open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .product-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .product-modal__dialog {
+    position: relative;
+    margin: var(--space-3xl) auto;
+    width: min(860px, calc(100% - 32px));
+    max-height: calc(100vh - var(--space-3xl) * 2);
+    overflow-y: auto;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    transform: translateY(16px);
+    transition: transform var(--transition-base);
+  }
+
+  .product-modal.open .product-modal__dialog {
+    transform: translateY(0);
+  }
+
+  .product-modal__close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    z-index: 1;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+    background-color: rgba(10, 13, 13, 0.7);
+    width: 40px;
+    height: 40px;
+    transition: color var(--transition-fast);
+  }
+
+  .product-modal__close:hover {
+    color: var(--color-text);
+  }
+
+  .product-modal__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .product-modal__imagen {
+    background-color: var(--color-border);
+  }
+
+  .product-modal__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
+  .product-modal__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-2xl);
+  }
+
+  .product-modal__categoria {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-primary);
+  }
+
+  .product-modal__nombre {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+
+  .product-modal__desc {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .product-modal__precio {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .product-modal__sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .product-modal__size {
+    padding: var(--space-xs) var(--space-lg);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+  }
+
+  .product-modal__size:hover,
+  .product-modal__size.active {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .product-modal__add {
+    margin-top: var(--space-sm);
+    padding: var(--space-md);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+    transition: background-color var(--transition-fast);
+  }
+
+  .product-modal__add:hover {
+    background-color: #b08228;
+  }
+
+  @media (max-width: 720px) {
+    .product-modal__content {
+      grid-template-columns: 1fr;
+    }
+
+    .product-modal__img {
+      aspect-ratio: 4 / 3;
+    }
+
+    .product-modal__info {
+      padding: var(--space-lg);
+    }
+  }
+</style>
