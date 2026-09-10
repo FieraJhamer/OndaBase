@@ -289,6 +289,14 @@ const fechaDestacado = new Date(destacado.fecha + 'T00:00:00').toLocaleDateStrin
     gap: var(--space-xl);
   }
 
+  @media (max-width: 640px) {
+    .products-grid,
+    .drops-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+    }
+  }
+
   .filters {
     display: flex;
     flex-wrap: wrap;

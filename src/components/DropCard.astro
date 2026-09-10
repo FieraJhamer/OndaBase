@@ -130,4 +130,24 @@ const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-AR'
     background-color: var(--color-primary);
     color: var(--color-bg);
   }
+
+  @media (max-width: 640px) {
+    .drop-card__body {
+      padding: var(--space-md);
+      gap: var(--space-xs);
+    }
+
+    .drop-card__nombre {
+      font-size: 1.0625rem;
+    }
+
+    .drop-card__tagline {
+      font-size: 0.75rem;
+    }
+
+    .drop-card__view {
+      padding: var(--space-sm);
+      font-size: 0.6875rem;
+    }
+  }
 </style>

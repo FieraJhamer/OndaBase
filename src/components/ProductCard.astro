@@ -150,4 +150,33 @@ const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.pro
   .product-card__add:hover {
     background-color: #b08228;
   }
+
+  @media (max-width: 640px) {
+    .product-card__info {
+      padding: var(--space-sm);
+      gap: var(--space-xs);
+    }
+
+    .product-card__name {
+      font-size: 0.9375rem;
+    }
+
+    .product-card__desc {
+      font-size: 0.6875rem;
+    }
+
+    .product-card__price {
+      font-size: 1rem;
+    }
+
+    .product-card__size {
+      padding: var(--space-xs);
+      font-size: 0.6875rem;
+    }
+
+    .product-card__add {
+      padding: var(--space-sm);
+      font-size: 0.6875rem;
+    }
+  }
 </style>

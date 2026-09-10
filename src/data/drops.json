@@ -6,7 +6,7 @@
     "fecha": "2026-01-15",
     "destacado": true,
     "portada": "/uploads/remera-negra.jpg",
-    "productos": ["remera-basica-negra", "remera-oversized-blanca", "buzo-canguro-negro"]
+    "productos": ["remera-basica-negra", "remera-oversized-blanca", "buzo-canguro-negro", "buzo-canguro-negro"]
   },
   {
     "id": "drop-tonos-tierra",
