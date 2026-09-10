@@ -71,8 +71,6 @@ const fechaDestacado = new Date(destacado.fecha + 'T00:00:00').toLocaleDateStrin
               nombre={producto.nombre}
               precio={producto.precio}
               imagen={producto.imagen}
-              descripcion={producto.descripcion}
-              talles={producto.talles}
               categoria={producto.categoria}
             />
           ))}
@@ -88,7 +86,7 @@ const fechaDestacado = new Date(destacado.fecha + 'T00:00:00').toLocaleDateStrin
               nombre={drop.nombre}
               tagline={drop.tagline}
               fecha={drop.fecha}
-              portada={drop.portada}
+              imagenes={drop.productos.map((p) => p.imagen)}
               cantidad={drop.cantidad}
             />
           ))}
@@ -112,8 +110,6 @@ const fechaDestacado = new Date(destacado.fecha + 'T00:00:00').toLocaleDateStrin
               nombre={producto.nombre}
               precio={producto.precio}
               imagen={producto.imagen}
-              descripcion={producto.descripcion}
-              talles={producto.talles}
               categoria={producto.categoria}
             />
           ))}

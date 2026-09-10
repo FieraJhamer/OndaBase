@@ -37,6 +37,18 @@ const { productos } = Astro.props;
       document.body.style.overflow = '';
     }
 
+    function mostrarAviso() {
+      const errorEl = contentEl?.querySelector('#product-modal-error');
+      errorEl?.removeAttribute('hidden');
+      contentEl?.querySelector('.product-modal__sizes')?.classList.add('product-modal__sizes--aviso');
+    }
+
+    function limpiarAviso() {
+      const errorEl = contentEl?.querySelector('#product-modal-error');
+      errorEl?.setAttribute('hidden', '');
+      contentEl?.querySelector('.product-modal__sizes')?.classList.remove('product-modal__sizes--aviso');
+    }
+
     function abrirModal(id) {
       const producto = productos.find((p) => p.id === id);
       if (!producto) return;
@@ -59,6 +71,7 @@ const { productos } = Astro.props;
             <button class="product-modal__add" data-id="${producto.id}" data-nombre="${producto.nombre}" data-precio="${producto.precio}">
               Agregar al carrito
             </button>
+            <p class="product-modal__error" id="product-modal-error" role="alert" hidden>Seleccioná un talle para continuar</p>
           </div>
         `;
       }
@@ -88,6 +101,7 @@ const { productos } = Astro.props;
       if (sizeBtn) {
         contentEl.querySelectorAll('.product-modal__size').forEach((b) => b.classList.remove('active'));
         sizeBtn.classList.add('active');
+        limpiarAviso();
         return;
       }
 
@@ -95,7 +109,7 @@ const { productos } = Astro.props;
       if (addBtn) {
         const sizeEl = contentEl.querySelector('.product-modal__size.active');
         if (!sizeEl) {
-          alert('Seleccioná un talle');
+          mostrarAviso();
           return;
         }
         const talle = sizeEl.dataset.talle || '';
@@ -262,6 +276,28 @@ const { productos } = Astro.props;
 
   .product-modal__add:hover {
     background-color: #b08228;
+  }
+
+  .product-modal__error {
+    font-size: 0.8125rem;
+    color: #e74c3c;
+    line-height: 1.4;
+  }
+
+  .product-modal__sizes--aviso .product-modal__size {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    animation: product-modal-aviso 0.7s ease 2;
+  }
+
+  @keyframes product-modal-aviso {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(200, 148, 49, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgba(200, 148, 49, 0);
+    }
   }
 
   @media (max-width: 720px) {

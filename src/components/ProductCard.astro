@@ -4,12 +4,10 @@ interface Props {
   nombre: string;
   precio: number;
   imagen: string;
-  descripcion: string;
-  talles: string[];
   categoria: string;
 }
 
-const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.props;
+const { id, nombre, precio, imagen, categoria } = Astro.props;
 ---
 
 <article class="product-card" data-product-id={id} data-categoria={categoria}>
@@ -19,14 +17,7 @@ const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.pro
     </div>
   <div class="product-card__info">
     <h3 class="product-card__name">{nombre}</h3>
-    <p class="product-card__desc">{descripcion}</p>
     <p class="product-card__price">${precio.toLocaleString('es-AR')}</p>
-    <div class="product-card__sizes">
-      {talles.map((talle) => (
-        <button class="product-card__size" data-talle={talle}>{talle}</button>
-      ))}
-    </div>
-    <button class="product-card__add" data-product-id={id}>Agregar al carrito</button>
   </div>
 </article>
 
@@ -87,6 +78,7 @@ const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.pro
   }
 
   .product-card__info {
+    flex: 1;
     padding: var(--space-md);
     display: flex;
     flex-direction: column;
@@ -99,56 +91,16 @@ const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.pro
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-  }
-
-  .product-card__desc {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .product-card__price {
+    margin-top: auto;
     font-size: 1.125rem;
     font-weight: 700;
     color: var(--color-primary);
-  }
-
-  .product-card__sizes {
-    display: flex;
-    gap: var(--space-xs);
-    flex-wrap: wrap;
-  }
-
-  .product-card__size {
-    padding: var(--space-xs) var(--space-sm);
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    border: 1px solid var(--color-border);
-    color: var(--color-text-muted);
-    transition: all var(--transition-fast);
-  }
-
-  .product-card__size:hover,
-  .product-card__size.active {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-  }
-
-  .product-card__add {
-    margin-top: var(--space-xs);
-    padding: var(--space-sm) var(--space-md);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-bg);
-    background-color: var(--color-primary);
-    transition: background-color var(--transition-fast);
-  }
-
-  .product-card__add:hover {
-    background-color: #b08228;
   }
 
   @media (max-width: 640px) {
@@ -161,22 +113,8 @@ const { id, nombre, precio, imagen, descripcion, talles, categoria } = Astro.pro
       font-size: 0.9375rem;
     }
 
-    .product-card__desc {
-      font-size: 0.6875rem;
-    }
-
     .product-card__price {
       font-size: 1rem;
-    }
-
-    .product-card__size {
-      padding: var(--space-xs);
-      font-size: 0.6875rem;
-    }
-
-    .product-card__add {
-      padding: var(--space-sm);
-      font-size: 0.6875rem;
     }
   }
 </style>

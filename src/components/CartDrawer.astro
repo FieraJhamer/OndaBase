@@ -139,32 +139,6 @@
     document.getElementById('cart-close')?.addEventListener('click', closeCart);
     document.getElementById('cart-overlay')?.addEventListener('click', closeCart);
 
-    document.querySelectorAll('.product-card__add').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card = btn.closest('.product-card');
-        const productId = card?.dataset.productId;
-        const activeSize = card?.querySelector('.product-card__size.active');
-        if (!productId) return;
-        if (!activeSize) {
-          alert('Seleccioná un talle');
-          return;
-        }
-        const nombre = card.querySelector('.product-card__name')?.textContent || '';
-        const precioText = card.querySelector('.product-card__price')?.textContent || '0';
-        const precio = parseInt(precioText.replace(/[^0-9]/g, ''), 10);
-        const talle = activeSize.dataset.talle || '';
-        addToCart(productId, nombre, precio, talle);
-      });
-    });
-
-    document.querySelectorAll('.product-card__size').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card = btn.closest('.product-card');
-        card?.querySelectorAll('.product-card__size').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
     document.getElementById('cart-items')?.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       const removeBtn = target.closest?.('.cart-drawer__item-remove');
